@@ -22,7 +22,7 @@ namespace Ridingbikesinplaces
             _inventory = (Item[])items.Clone(); // Copy to be safe
         }
 
-        public void reset(Item resetItem)
+        public void Reset(Item resetItem)
         {
             for (int i = 0; i < _inventory.Length; i++)
             {
@@ -80,7 +80,7 @@ namespace Ridingbikesinplaces
             return false;
         }
 
-        public bool open(Entity target, int X, int Y) // only use x and y if you need to place elsewere
+        public bool Open(Entity target, int X, int Y) // only use x and y if you need to place elsewere
         {
             //open, equip, destroy, description, hand
             int linesWrote = 0;
@@ -166,7 +166,7 @@ namespace Ridingbikesinplaces
 
             Console.ReadLine();
             terminal.qClear(linesWrote, X, Y);
-            open(target, X, Y);
+            Open(target, X, Y);
             return false;
         }
 
@@ -820,8 +820,12 @@ namespace Ridingbikesinplaces
     
         public Art(int skip, int take)
         {
+            // Assuming gameArt.txt is in your project root
+            string projectRoot = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..");//dk what this doinf exactly but dont touch it 
+            string artFilePath = Path.Combine(projectRoot, "gameArt.txt");
+            
             Lines = File
-                .ReadLines("/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/gameArt.txt").Skip(skip)
+                .ReadLines("gameArt.txt").Skip(skip)
                 .Take(take).ToArray();
             Width = Lines.Any() ? Lines.Max(s => s.Length) : 0;// i got no clue what this is doing cl
             Height = Lines.Count();
@@ -868,7 +872,7 @@ namespace Ridingbikesinplaces
                 Inventory = new Inventory([weakHealthPotion])
             };
 
-            player.Inventory.reset(nothing);
+            player.Inventory.Reset(nothing);
 
             //map stuff
             MapObject wall = new Wall();
@@ -948,7 +952,7 @@ namespace Ridingbikesinplaces
                     {
                         case ConsoleKey.I: //inventory
                             player.canMove = false;
-                            player.Inventory.open(player, currentMap.X + 1, 0);
+                            player.Inventory.Open(player, currentMap.X + 1, 0);
                             player.canMove = true;
                             break;
                         case ConsoleKey.T: //talk
