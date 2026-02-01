@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ridingbikesinplaces")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b45995f13c5a63f971bdbcd065f42c3dbe65d8b0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3dedb1f52262afcc11575f5c77fbc6ef239c5998")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ridingbikesinplaces")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ridingbikesinplaces")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

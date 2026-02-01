@@ -1,4 +1,7 @@
 ﻿//player = Green, NPC = Cyan, Hostile = Dark Red, Boss = Red, Console = Deep Purple, Other = Yellow
+
+using System.Runtime.InteropServices;
+
 namespace Ridingbikesinplaces
 {
     //other
@@ -420,7 +423,7 @@ namespace Ridingbikesinplaces
             terminal.clear(X, Y);
         }
 
-        public static int getInput(int position, int maxBound)
+        public static int[] getInput(int position, int maxBound)
         {
             ConsoleKey key = Console.ReadKey(true).Key;
             switch (key) 
@@ -438,10 +441,11 @@ namespace Ridingbikesinplaces
                     }
                     break;
                 case ConsoleKey.Enter:
-                    return position;
+                    
+                    return [position, -1];
+                    break; 
             }
-
-            return -1;
+            return [position, 0];
         }
     }
 
@@ -519,7 +523,7 @@ namespace Ridingbikesinplaces
         public Enemy[] Enemies { get; set; }
         private bool PlayerTurn = true;
         private bool battleEned = false;
-
+        
         private bool CheckAllEHealth()
         {
             int count = 0;
@@ -542,9 +546,12 @@ namespace Ridingbikesinplaces
         private Weapon SelectWeapon(int X, int Y)
         {
             Weapon[] weapons = Player.Inventory.ReturnWeapons();
-            if (weapons.Length != 0)
+            int startX = X;
+            int[] positionA = [0];
+            int position = 0;
+            while (weapons.Length != 0)
             {
-                int position = terminal.getInput(0, weapons.Length);
+
                 for (int i = 0; i < weapons.Length; i++)
                 {
                     if (position == i)
@@ -555,8 +562,17 @@ namespace Ridingbikesinplaces
                     {
                         terminal.qWrite(ConsoleColor.DarkGray, weapons[i].Name, X, Y);
                     }
-                } 
-                return weapons[position];
+                    X += weapons[i].Name.Length + 2;
+                }
+                positionA =  terminal.getInput(position, weapons.Length);
+                position = positionA[0];
+                X = startX;
+                
+                if (positionA[1] == -1)
+                {
+                    return weapons[position];
+                }
+                
             }
 
             return null;
@@ -569,54 +585,115 @@ namespace Ridingbikesinplaces
             terminal.iClear(map.X + 1, 0);
             while (battleEned == false) //makes sure no one is dead
             {
+                int firstX = map.X + 1;
+                int firstY = 0;
+                Random random = new Random();
                 int X = 0;
                 int linesWorte = 0;
                 Console.SetCursorPosition(map.X, 0);
                 X = map.X+1;
-                int position = 0;
+                int[] position = [0];
                 PlayerTurn = true;
                 while (PlayerTurn)
                 {
+                    int tally = 0;
                     for (int i = 0; i < Enemies.Length; i++)
                     {
-                        if (position == i)//prints the art as green
+                        if (Enemies[i].health <= 0)
                         {
-                            terminal.writeArt(ConsoleColor.DarkGreen, Enemies[i].art.Lines, X, 0);
+                            tally++;
                         }
-                        else
+                        if (tally == Enemies.Length)
                         {
-                            terminal.writeArt(ConsoleColor.DarkRed, Enemies[i].art.Lines, X, 0);
+                            terminal.qClear(Enemies[0].art.Height + 3, firstX, firstY);
+                            Player.canMove = true;
+                            return true;
                         }
-                        terminal.qWrite(ConsoleColor.DarkRed, " H = "+$"{Enemies[i].health}", X+1, Enemies[i].art.Height);
-                        X += Enemies[i].art.Width + 1;
                     }
 
-                    X = map.X+1;
-                    ConsoleKey key = Console.ReadKey(true).Key;
-                    switch (key)// getting the postion of which enimie you want to attack
+                    for (int i = 0; i < Enemies.Length; i++)
                     {
-                        
-                        case ConsoleKey.LeftArrow:
-                            if (position > 0)
+                        if (Enemies[i].health > 0)
+                        {
+                            if (position[0] == i) //prints the art as green
                             {
-                                position--;
+                                terminal.writeArt(ConsoleColor.DarkGreen, Enemies[i].art.Lines, X, 0);
                             }
-                            break;
-                        case ConsoleKey.RightArrow:
-                            if (position < Enemies.Length - 1)
+                            else
                             {
-                                position++;
+                                terminal.writeArt(ConsoleColor.DarkRed, Enemies[i].art.Lines, X, 0);
                             }
 
-                            break;
-                        case ConsoleKey.Enter:
-                            SelectWeapon(15, 15);
-                            break;
+                            terminal.clear(X + 1, Enemies[i].art.Height);
+                            terminal.qWrite(ConsoleColor.DarkRed, " H = " + $"{Enemies[i].health}", X + 1,
+                                Enemies[i].art.Height);
+                            X += Enemies[i].art.Width + 1;
+                        }
                     }
+                    X = map.X+1;
+                    position = terminal.getInput(position[0], Enemies.Length);
                     
+                    if (position[1] == -1)//user inutted a return
+                    {
+                        int targetedEnemy = position[0]; 
+                        Weapon selectedWeapon = SelectWeapon(X, Enemies[targetedEnemy].art.Height+2);
+                        if (selectedWeapon != null)
+                        {
+                            Enemies[targetedEnemy].health -= selectedWeapon.Damage;
+                            if (Enemies[targetedEnemy].health <= 0)
+                            {
+                                terminal.write(ConsoleColor.DarkGreen, "You killed "+ Enemies[targetedEnemy].name, X, 500 ,Enemies[targetedEnemy].art.Height+2);
+                                terminal.iClear(X, Enemies[targetedEnemy].art.Height+2);
+                            }
+                            
+                        }
+
+
+                        PlayerTurn = false;
+                    }
                     
                 }
+
+                while (!PlayerTurn)
+                {
+                    
+                    bool hasAttacked;
+                    for (int i = 0; i < Enemies.Length; i++)
+                    {
+                        if (Enemies[i].health > 0)
+                        {
+                            int roll = random.Next(1, 100);
+                            if (roll >= 75)
+                            {
+                                hasAttacked = false;
+                            }
+                            else
+                            {
+                                hasAttacked = true;
+                            }
+
+
+                            if (hasAttacked)
+                            {
+                                terminal.qWrite(ConsoleColor.DarkRed, Enemies[i].name + "Has attcked you and did " + Enemies[i].Hand.Damage, X, Enemies[i].art.Height + 2);
+                                Player.Health -= Enemies[i].Hand.Damage;
+                                terminal.clear(0, map.Y+1);
+                                terminal.qWrite(ConsoleColor.Green, "Health = " + Player.Health, 0, map.Y+1);
+                            }
+                            else
+                            {
+                                terminal.qWrite(ConsoleColor.DarkRed,
+                                    Enemies[i].name + "Tried attacking you and missed", X, Enemies[i].art.Height + 2);
+                            }
+
+                            terminal.iClear(X, Enemies[i].art.Height + 2);
+                        }
+                    }
+
+                    PlayerTurn = true;
+                }
                 
+                terminal.qClear(Enemies[0].art.Height + 3, firstX, firstY);
             }
 
             return false;
@@ -640,8 +717,8 @@ namespace Ridingbikesinplaces
     {
         public string Letter { get; set; }
         public ConsoleColor Color { get; set; }
-        public bool Solid { get; init; }
-        public Event Event { get; init; }
+        public bool Solid { get; set; }
+        public Event Event { get; set; }
 
     }
 
@@ -687,6 +764,7 @@ namespace Ridingbikesinplaces
         public required int health { get; set; }
         public Dialog dialog { get; set; }
         public Art art { get; set; }
+        public double hitChance { get; set; }
     }
 
     public class Player : Entity
@@ -734,9 +812,9 @@ namespace Ridingbikesinplaces
                 Name = "Damaged Steel Sword",
                 Damage = 5
             });
-            items.Add("flimseyWoodenSword", new Weapon()
+            items.Add("flimsyWoodenSword", new Weapon()
             {
-                Name = "Flimsey Wooden Sword",
+                Name = "Flimsy Wooden Sword Wooden Sword",
                 Damage = 2
             });
             items.Add("weakHealthPotion", new HealthPotion()
@@ -860,7 +938,8 @@ namespace Ridingbikesinplaces
                 art = Artlibary.goblin,
                 health = 15,
                 Hand = flimsyWoodenSword,
-                Inventory = new Inventory([weakHealthPotion])
+                Inventory = new Inventory([weakHealthPotion]),
+                hitChance = 75/100
             };
             Enemy testEnemy2 = new Enemy
             {
@@ -869,7 +948,8 @@ namespace Ridingbikesinplaces
                 art = Artlibary.goblin_beard,
                 health = 12,
                 Hand = flimsyWoodenSword,
-                Inventory = new Inventory([weakHealthPotion])
+                Inventory = new Inventory([weakHealthPotion]),
+                hitChance = 75/100
             };
 
             player.Inventory.Reset(nothing);
@@ -998,7 +1078,12 @@ namespace Ridingbikesinplaces
 
                     if (player.CheckEntity(currentMap.map) is { Event: Battle } entity)//check if we need to start a battle
                     {
-                        entity.Event.Start(currentMap);
+                        if (entity.Event.Start(currentMap) == true)
+                        {
+                            Bat1.Letter = " ";
+                            Bat1.Solid = false;
+                            Bat1.Event = null;
+                        }
                     }
                 }
 
