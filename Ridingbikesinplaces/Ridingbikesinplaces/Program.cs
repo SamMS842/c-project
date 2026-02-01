@@ -523,26 +523,6 @@ namespace Ridingbikesinplaces
         public Enemy[] Enemies { get; set; }
         private bool PlayerTurn = true;
         private bool battleEned = false;
-        
-        private bool CheckAllEHealth()
-        {
-            int count = 0;
-            foreach (Enemy enemy in Enemies)
-            {
-                if (enemy.health > 0)
-                {
-                    count++;
-                }
-            }
-
-            if (count == Enemies.Length)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private Weapon SelectWeapon(int X, int Y)
         {
             Weapon[] weapons = Player.Inventory.ReturnWeapons();
@@ -609,7 +589,7 @@ namespace Ridingbikesinplaces
                             Player.canMove = true;
                             return true;
                         }
-                    }
+                    }//cheking if battle should end
 
                     for (int i = 0; i < Enemies.Length; i++)
                     {
@@ -778,16 +758,16 @@ namespace Ridingbikesinplaces
             if (map[Y - 1, X].Event != null) //up
             {
                 return map[Y - 1, X];
-            }
-            else if (map[Y + 1, X].Event != null) //down
+            } 
+            if (map[Y + 1, X].Event != null) //down
             {
                 return map[Y + 1, X];
             }
-            else if (map[Y, X - 1].Event != null) //left
+            if (map[Y, X - 1].Event != null) //left
             {
                 return map[Y, X - 1];
             }
-            else if (map[Y, X + 1].Event != null)
+            if (map[Y, X + 1].Event != null)
             {
                 return map[Y, X + 1];
             }
@@ -1021,9 +1001,7 @@ namespace Ridingbikesinplaces
             while (true) //game loop
             {
                 terminal.writeMap(currentMap, 0, 0);
-
-                Console.SetCursorPosition(player.X, player.Y); // first wite the player to the map
-                Console.Write(player.Letter); // @ = player
+                terminal.qWrite(ConsoleColor.Green, player.Letter, player.X, player.Y);
 
                 ConsoleKey key = Console.ReadKey(true).Key;
                 if (player.canMove == true)
@@ -1039,8 +1017,6 @@ namespace Ridingbikesinplaces
                             //check if npc is arount them
                             if (player.CheckEntity(currentMap.map) != null)
                             {
-                                Console.SetCursorPosition(13, 13);
-                                Console.WriteLine("Is NPC");
                                 player.canMove = false; //stops player input
                                 player.CheckEntity(currentMap.map).Event.Start(currentMap);
                             }
@@ -1088,12 +1064,6 @@ namespace Ridingbikesinplaces
                 }
 
                 terminal.qWrite(ConsoleColor.Green, "Health = " + player.Health, 0, currentMap.Y+1);
-
-
-
-
-
-
             }
 
         }
