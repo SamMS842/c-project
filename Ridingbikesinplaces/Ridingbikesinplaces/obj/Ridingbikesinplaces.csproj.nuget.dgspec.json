@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {}
+    "/home/sam/RiderProjects/c-project/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {}
   },
   "projects": {
-    "/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {
+    "/home/sam/RiderProjects/c-project/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
+        "projectUniqueName": "/home/sam/RiderProjects/c-project/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
         "projectName": "Ridingbikesinplaces",
-        "projectPath": "/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
-        "packagesPath": "/home/samms/.nuget/packages/",
-        "outputPath": "/home/samms/RiderProjects/Ridingbikesinplaces/Ridingbikesinplaces/obj/",
+        "projectPath": "/home/sam/RiderProjects/c-project/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
+        "packagesPath": "/home/sam/.nuget/packages/",
+        "outputPath": "/home/sam/RiderProjects/c-project/Ridingbikesinplaces/Ridingbikesinplaces/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/samms/.nuget/NuGet/NuGet.Config"
+          "/home/sam/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/samms/.dotnet/sdk/10.0.102/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/home/sam/.dotnet/sdk/10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

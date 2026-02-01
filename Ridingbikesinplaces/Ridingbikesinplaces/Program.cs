@@ -1,10 +1,5 @@
 ﻿//player = Green, NPC = Cyan, Hostile = Dark Red, Boss = Red, Console = Deep Purple, Other = Yellow
-
-using System.Numerics;
-using System.Linq;
-using TEST;
-
-namespace TEST
+namespace Ridingbikesinplaces
 {
     //other
     public abstract class Position
@@ -15,36 +10,36 @@ namespace TEST
 
     public class Inventory
     {
-        private Item[] inventory;
+        private Item[] _inventory;
 
         public Inventory(int size)
         {
-            inventory = new Item[size];
+            _inventory = new Item[size];
         }
 
         public Inventory(Item[] items)
         {
-            inventory = (Item[])items.Clone(); // Copy to be safe
+            _inventory = (Item[])items.Clone(); // Copy to be safe
         }
 
         public void reset(Item resetItem)
         {
-            for (int i = 0; i < inventory.Length; i++)
+            for (int i = 0; i < _inventory.Length; i++)
             {
-                inventory[i] = resetItem;
+                _inventory[i] = resetItem;
             }
         }
         
         public bool AddItem(Item item, int position)
         {
-            if (position < 0 || position >= inventory.Length) // || = or
+            if (position < 0 || position >= _inventory.Length) // || = or
             {
                 return false;
             }
 
-            if (inventory[position] is Empty)
+            if (_inventory[position] is Empty)
             {
-                inventory[position] = item;
+                _inventory[position] = item;
                 return true;
             }
 
@@ -53,14 +48,14 @@ namespace TEST
 
         public bool RemoveItem(int position)
         {
-            if (position < 0 || position >= inventory.Length) // || = or
+            if (position < 0 || position >= _inventory.Length) // || = or
             {
                 return false;
             }
 
-            if (inventory[position] is not Empty)
+            if (_inventory[position] is not Empty)
             {
-                inventory[position] = new Empty()
+                _inventory[position] = new Empty()
                 {
                     Name = "",
                     Description = "You can place an item here!"
@@ -73,10 +68,10 @@ namespace TEST
 
         public bool MoveItem(int start, int end)
         {
-            if (inventory[start] is not Empty)
+            if (_inventory[start] is not Empty)
             {
-                Item item1ToMove = inventory[start];
-                Item item2ToMove = inventory[end];
+                Item item1ToMove = _inventory[start];
+                Item item2ToMove = _inventory[end];
                 AddItem(item1ToMove, end);
                 AddItem(item2ToMove, start);
                 return true;
@@ -90,7 +85,7 @@ namespace TEST
             //open, equip, destroy, description, hand
             int linesWrote = 0;
 
-            int length = terminal.writeArry(ConsoleColor.Green, inventory, X, Y);
+            int length = terminal.writeArry(ConsoleColor.Green, _inventory, X, Y);
             terminal.qWrite(ConsoleColor.Green, "--type h or help for commands!", X + length + 2, Y);
             string userInput = Console.ReadLine();
             linesWrote++;
@@ -123,17 +118,17 @@ namespace TEST
                     int start = userInput.IndexOf('<') + 1; // get the item of the invetory we want to accses
                     int end = userInput.IndexOf('>');
                     string indexStr = userInput.Substring(start, end - start);
-                    if (start >= 1 && end <= inventory.Length && start < end)
+                    if (start >= 1 && end <= _inventory.Length && start < end)
                     {
                         if (int.TryParse(indexStr,
                                 out int number)) //if the user unputs a valid number it convers into an int
                         {
                             if (userInput.Contains("equip") || userInput.Contains("-e"))
                             {
-                                if (inventory[number - 1] is Weapon)
+                                if (_inventory[number - 1] is Weapon)
                                 {
-                                    target.Hand = (Weapon)inventory[number - 1];
-                                    inventory[number - 1] = new Empty();
+                                    target.Hand = (Weapon)_inventory[number - 1];
+                                    _inventory[number - 1] = new Empty();
                                 }
                                 else
                                 {
@@ -144,12 +139,12 @@ namespace TEST
 
                             else if (userInput.Contains("destroy") || userInput.Contains("-r"))
                             {
-                                inventory[number - 1] = new Empty();
+                                _inventory[number - 1] = new Empty();
                             }
 
                             else if (userInput.Contains("description") || userInput.Contains("-d"))
                             {
-                                terminal.qWrite(ConsoleColor.DarkMagenta, inventory[number - 1].Description, X, Y + 1);
+                                terminal.qWrite(ConsoleColor.DarkMagenta, _inventory[number - 1].Description, X, Y + 1);
                                 linesWrote++;
                             }
                         }
@@ -181,16 +176,16 @@ namespace TEST
             int start;
             int end;
             terminal.qWrite(ConsoleColor.DarkMagenta, "What item would you like to move? ", X, Y);
-            terminal.writeArry(ConsoleColor.Green, inventory, X + "What item would you like to move?".Length, Y);
+            terminal.writeArry(ConsoleColor.Green, _inventory, X + "What item would you like to move?".Length, Y);
             string userInput = Console.ReadLine();
             terminal.clear(X, Y);
             terminal.qWrite(ConsoleColor.DarkMagenta, "Were would you like to move? ", X, Y);
-            terminal.writeArry(ConsoleColor.Green, inventory, X + "Were would you like to move? ".Length, Y);
+            terminal.writeArry(ConsoleColor.Green, _inventory, X + "Were would you like to move? ".Length, Y);
             string userInput2 = Console.ReadLine();
             linesWrote++;
             if (int.TryParse(userInput, out start) && int.TryParse(userInput2, out end))
             {
-                if (inventory[start] is Empty)
+                if (_inventory[start] is Empty)
                 {
                     terminal.qWrite(ConsoleColor.DarkMagenta, "Cannot move empty item", X, Y + 1);
                     Console.ReadLine();
@@ -200,7 +195,7 @@ namespace TEST
                 else
                 {
                     MoveItem(start, end);
-                    terminal.writeArry(ConsoleColor.Green, inventory, X, Y + 1);
+                    terminal.writeArry(ConsoleColor.Green, _inventory, X, Y + 1);
                     Console.ReadLine();
                     linesWrote++;
                     terminal.qClear(linesWrote, X, Y);
@@ -224,7 +219,7 @@ namespace TEST
 
             //"were would you like to place <item>"
             terminal.qWrite(ConsoleColor.DarkMagenta, "(0=trash) Were would you like to place? " + item.Name, X, Y);
-            terminal.writeArry(ConsoleColor.Green, inventory, X + "(0=trash) Were would you like to place? ".Length, Y);
+            terminal.writeArry(ConsoleColor.Green, _inventory, X + "(0=trash) Were would you like to place? ".Length, Y);
             string userInput = Console.ReadLine();
             linesWrote++;
 
@@ -286,7 +281,7 @@ namespace TEST
 
         public Weapon[] ReturnWeapons()
         {
-            return inventory.OfType<Weapon>().ToArray();
+            return _inventory.OfType<Weapon>().ToArray();
         }
     }
 
@@ -560,10 +555,11 @@ namespace TEST
                     {
                         terminal.qWrite(ConsoleColor.DarkGray, weapons[i].Name, X, Y);
                     }
-                }
+                } 
                 return weapons[position];
             }
 
+            return null;
         }
         
         public override bool Start(Map map)
