@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/sam/RiderProjects/c-project1/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {}
+    "/home/sam/RiderProjects/c-project11/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {}
   },
   "projects": {
-    "/home/sam/RiderProjects/c-project1/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {
+    "/home/sam/RiderProjects/c-project11/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sam/RiderProjects/c-project1/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
+        "projectUniqueName": "/home/sam/RiderProjects/c-project11/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
         "projectName": "Ridingbikesinplaces",
-        "projectPath": "/home/sam/RiderProjects/c-project1/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
+        "projectPath": "/home/sam/RiderProjects/c-project11/Ridingbikesinplaces/Ridingbikesinplaces/Ridingbikesinplaces.csproj",
         "packagesPath": "/home/sam/.nuget/packages/",
-        "outputPath": "/home/sam/RiderProjects/c-project1/Ridingbikesinplaces/Ridingbikesinplaces/obj/",
+        "outputPath": "/home/sam/RiderProjects/c-project11/Ridingbikesinplaces/Ridingbikesinplaces/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/sam/.nuget/NuGet/NuGet.Config"

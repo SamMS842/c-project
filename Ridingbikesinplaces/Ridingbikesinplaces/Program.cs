@@ -1,5 +1,6 @@
 ﻿//player = Green, NPC = Cyan, Hostile = Dark Red, Boss = Red, Console = Deep Purple, Other = Yellow
 
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Ridingbikesinplaces
@@ -727,6 +728,16 @@ namespace Ridingbikesinplaces
         }
     }
 
+    public class LargeWall : MapObject
+    {
+        public LargeWall()
+        {
+            Letter = "--";
+            Color = ConsoleColor.DarkRed;
+            Solid = true;
+        }
+    }
+
 
     //Enitys players Enimys
 
@@ -796,6 +807,16 @@ namespace Ridingbikesinplaces
             {
                 Name = "Flimsy Wooden Sword Wooden Sword",
                 Damage = 2
+            });
+            items.Add("gostlyStrike", new Weapon()
+            {
+                Name = "Gosly Strike",
+                Damage = 5
+            });
+            items.Add("haunt", new Weapon()
+            {
+                Name = "Haunt",
+                Damage = 7
             });
             items.Add("weakHealthPotion", new HealthPotion()
             {
@@ -867,7 +888,8 @@ namespace Ridingbikesinplaces
     {
         public static Art goblin = new Art(1, 11);
         public static Art goblin_beard = new Art(13, 11);
-        public static Art alien = new Art(25, 33);
+        public static Art gost1 = new Art(24, 6);
+        public static Art gost2 = new Art(31, 6);
     }
 
     public class Art
@@ -899,6 +921,8 @@ namespace Ridingbikesinplaces
             Item nothing = itemManager.GetItem("nothing");
             Item damagedSteelSword = itemManager.GetItem("damagedSteelSword");
             Weapon flimsyWoodenSword = (Weapon)itemManager.GetItem("flimsyWoodenSword");
+            Weapon gostlyStrike = (Weapon)itemManager.GetItem("gostlyStrike");
+            Weapon haunt = (Weapon)itemManager.GetItem("haunt");
             Item weakHealthPotion = itemManager.GetItem("weakHealthPotion");
             //player stuff
             Player player = new Player
@@ -931,12 +955,39 @@ namespace Ridingbikesinplaces
                 Inventory = new Inventory([weakHealthPotion]),
                 hitChance = 75/100
             };
+            Enemy testEnemy3 = new Enemy()
+            {
+                name = "Weak gost",
+                canMove = false,
+                art = Artlibary.gost1,
+                health = 25,
+                Hand = gostlyStrike,
+                hitChance = 25 / 100,
+                Inventory = new Inventory(0)
+            };
+            Enemy testEnemy4 = new Enemy()
+            {
+                name = "Strong gost",
+                canMove = false,
+                art = Artlibary.gost2,
+                health = 30,
+                Hand = flimsyWoodenSword,
+                hitChance = 50 / 100,
+                Inventory = new Inventory(0)
+            };
 
             player.Inventory.Reset(nothing);
 
             //map stuff
             MapObject wall = new Wall();
+            MapObject _largeWall = new LargeWall();
             MapObject Air_ = new Air();
+            MapObject X = new Wall()
+            {
+                Letter = "",
+                Solid = false,
+                Color = ConsoleColor.Black
+            };
             MapObject npc1 = new NPC()
             {
                 Letter = "?",
@@ -973,6 +1024,16 @@ namespace Ridingbikesinplaces
                 Letter = "G",
                 Solid = true
             };
+            MapObject Bat2 = new mEnemy()
+            {
+                Color = ConsoleColor.Red,
+                Event = new Battle()
+                {
+                    Enemies = [testEnemy3, testEnemy4],
+                    Player = player,
+                    ItemManager = itemManager
+                }
+            };
             Map testLevel = new Map()
             {
                 map = new MapObject[,]
@@ -991,6 +1052,24 @@ namespace Ridingbikesinplaces
                 },
                 X = 11,
                 Y = 10
+            };
+            Map testLevle2 = new Map()
+            {
+                map = new MapObject[,]
+                {
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
+                    { wall, _largeWall, _largeWall, _largeWall, _largeWall, _largeWall, _largeWall, wall, Bat2, wall, X, X, X, X, X, X },//here becaouse all need the same length becaouse its an arry not a list
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
+                    
+                }
             };
 
             //program
