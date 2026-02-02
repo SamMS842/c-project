@@ -519,7 +519,7 @@ namespace Ridingbikesinplaces
         }
     }
 
-    class Battle : Event
+    public class Battle : Event
     {
         public Enemy[] Enemies { get; set; }
         private bool PlayerTurn = true;
@@ -681,6 +681,16 @@ namespace Ridingbikesinplaces
         }
     }
 
+    public class LoadLevel : Event
+    {
+        public Map map { get; set; }
+
+        public override bool Start(Map map)
+        {
+            return true;
+        }
+    }
+
     //maps and objects for map
     public class Map : MapObject
     {
@@ -801,12 +811,13 @@ namespace Ridingbikesinplaces
             items.Add("damagedSteelSword", new Weapon()
             {
                 Name = "Damaged Steel Sword",
-                Damage = 5
+                Damage = 5,
+                Description = "A damaged sworded forged out of steel"
             });
             items.Add("flimsyWoodenSword", new Weapon()
             {
                 Name = "Flimsy Wooden Sword Wooden Sword",
-                Damage = 2
+                Damage = 2,
             });
             items.Add("gostlyStrike", new Weapon()
             {
@@ -817,6 +828,12 @@ namespace Ridingbikesinplaces
             {
                 Name = "Haunt",
                 Damage = 7
+            });
+            items.Add("goldenDagger", new Weapon()
+            {
+                Name = "Golden Dagger",
+                Damage = 25,
+                Description = "A golden dagger looks lije it could sell for a pretty penny!"
             });
             items.Add("weakHealthPotion", new HealthPotion()
             {
@@ -923,6 +940,7 @@ namespace Ridingbikesinplaces
             Weapon flimsyWoodenSword = (Weapon)itemManager.GetItem("flimsyWoodenSword");
             Weapon gostlyStrike = (Weapon)itemManager.GetItem("gostlyStrike");
             Weapon haunt = (Weapon)itemManager.GetItem("haunt");
+            Weapon goldenDagger = (Weapon)itemManager.GetItem("goldenDagger");
             Item weakHealthPotion = itemManager.GetItem("weakHealthPotion");
             //player stuff
             Player player = new Player
@@ -977,7 +995,6 @@ namespace Ridingbikesinplaces
             };
 
             player.Inventory.Reset(nothing);
-
             //map stuff
             MapObject wall = new Wall();
             MapObject _largeWall = new LargeWall();
@@ -1012,6 +1029,25 @@ namespace Ridingbikesinplaces
                     Player = player
                 }
             };
+            MapObject npc2 = new NPC()
+            {
+                Letter = "?",
+                Solid = true,
+                Color = ConsoleColor.Cyan,
+                Event = new Dialog()
+                {
+                    speech =
+                    [
+                        "My hero!",
+                        "You have saved me from these gosts!! . . .",
+                        "I was certian i would have perished . . .",
+                        "Please take this! . . . Its the least i could give.",
+                        "/give <goldenDagger>",
+                        "/end"
+                    ]
+                }
+            };
+            
             MapObject Bat1 = new mEnemy()
             {
                 Color = ConsoleColor.Red,
@@ -1064,12 +1100,26 @@ namespace Ridingbikesinplaces
                     { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, npc2, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
                     
                 }
+            };
+
+            Event loadLevletrigger = new LoadLevel()
+            {
+                map = testLevle2,
+                ItemManager = itemManager,
+                Player = player
+            };
+            MapObject SLV2 = new NPC()
+            {
+                Letter = "/",
+                Solid = true,
+                Color = ConsoleColor.DarkGreen,
+                Event = loadLevletrigger
             };
 
             //program
