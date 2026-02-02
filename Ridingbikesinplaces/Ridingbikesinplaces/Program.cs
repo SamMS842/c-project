@@ -353,8 +353,8 @@ namespace Ridingbikesinplaces
             for (int y = 0; y < map.GetLength(0); y++) //writing the map to the console
             {
                 for (int x = 0; x < map.GetLength(1); x++)
-                {
-                    terminal.qWrite(map.map[y, x].Color, map.map[y, x].Letter, x, y);
+                { 
+                    qWrite(map.map[y, x].Color, map.map[y, x].Letter, x, y);
                 }
             }
         }
@@ -684,6 +684,8 @@ namespace Ridingbikesinplaces
     public class LoadLevel : Event
     {
         public Map map { get; set; }
+        public int startX { get; init; }
+        public int startY { get; init; }
 
         public override bool Start(Map map)
         {
@@ -742,7 +744,7 @@ namespace Ridingbikesinplaces
     {
         public LargeWall()
         {
-            Letter = "--";
+            Letter = "++";
             Color = ConsoleColor.DarkRed;
             Solid = true;
         }
@@ -773,7 +775,15 @@ namespace Ridingbikesinplaces
         public string Name { get; set; }
         public int Health { get; set; }
 
+        public MapObject CheckTile(MapObject[,] map)
+        {
+            if (map[Y, X].Event != null) //up
+            {
+                return map[Y, X];
+            }
 
+            return null;
+        }
         public MapObject CheckEntity(MapObject[,] map)
         {
             if (map[Y - 1, X].Event != null) //up
@@ -1011,7 +1021,7 @@ namespace Ridingbikesinplaces
                 Solid = true,
                 Color = ConsoleColor.Cyan,
                 Event = new Dialog()
-                {
+                 {
                     items =
                     [
                         damagedSteelSword
@@ -1035,7 +1045,8 @@ namespace Ridingbikesinplaces
                 Solid = true,
                 Color = ConsoleColor.Cyan,
                 Event = new Dialog()
-                {
+                { 
+                    items = [goldenDagger],
                     speech =
                     [
                         "My hero!",
@@ -1044,7 +1055,10 @@ namespace Ridingbikesinplaces
                         "Please take this! . . . Its the least i could give.",
                         "/give <goldenDagger>",
                         "/end"
-                    ]
+                    ],
+                    Player = player,
+                    ItemManager = itemManager,
+                    spoken = false,
                 }
             };
             
@@ -1062,6 +1076,7 @@ namespace Ridingbikesinplaces
             };
             MapObject Bat2 = new mEnemy()
             {
+                Letter = "H",
                 Color = ConsoleColor.Red,
                 Event = new Battle()
                 {
@@ -1069,6 +1084,42 @@ namespace Ridingbikesinplaces
                     Player = player,
                     ItemManager = itemManager
                 }
+            };
+
+            Map testLevle2 = new Map()
+            {
+                map = new MapObject[,]
+                {
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Bat2, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, npc2, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
+                },
+                Y = 11,
+                X = 16,
+            };
+
+            Event loadLevletrigger = new LoadLevel()
+            {
+                startX = 1,
+                startY = 1,
+                map = testLevle2,
+                ItemManager = itemManager,
+                Player = player
+            };
+            MapObject SLV2 = new NPC()
+            {
+                Letter = "/",
+                Solid = false,
+                Color = ConsoleColor.DarkGreen,
+                Event = loadLevletrigger
             };
             Map testLevel = new Map()
             {
@@ -1082,44 +1133,12 @@ namespace Ridingbikesinplaces
                     { wall, wall, wall, wall, Air_, Air_, Air_, Air_, wall, wall, wall, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, Bat1, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
+                    { SLV2, Air_, Bat1, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
                     { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
                 },
                 X = 11,
                 Y = 10
-            };
-            Map testLevle2 = new Map()
-            {
-                map = new MapObject[,]
-                {
-                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
-                    { wall, _largeWall, _largeWall, _largeWall, _largeWall, _largeWall, _largeWall, wall, Bat2, wall, X, X, X, X, X, X },//here becaouse all need the same length becaouse its an arry not a list
-                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, Air_, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, npc2, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, Air_, wall },
-                    { wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall, wall },
-                    
-                }
-            };
-
-            Event loadLevletrigger = new LoadLevel()
-            {
-                map = testLevle2,
-                ItemManager = itemManager,
-                Player = player
-            };
-            MapObject SLV2 = new NPC()
-            {
-                Letter = "/",
-                Solid = true,
-                Color = ConsoleColor.DarkGreen,
-                Event = loadLevletrigger
             };
 
             //program
@@ -1135,6 +1154,16 @@ namespace Ridingbikesinplaces
                 ConsoleKey key = Console.ReadKey(true).Key;
                 if (player.canMove == true)
                 {
+                    //checks if it needs to start a battle. Then checks for player input. Checks what tile the player is on
+                    if (player.CheckEntity(currentMap.map) is { Event: Battle } entity)//check if we need to start a battle
+                    {
+                        if (entity.Event.Start(currentMap) == true)
+                        {
+                            entity.Letter = " ";
+                            entity.Solid = false;
+                            entity.Event = null;
+                        }
+                    }
                     switch (key)
                     {
                         case ConsoleKey.I: //inventory
@@ -1146,7 +1175,6 @@ namespace Ridingbikesinplaces
                             //check if npc is arount them
                             if (player.CheckEntity(currentMap.map) != null)
                             {
-                                player.canMove = false; //stops player input
                                 player.CheckEntity(currentMap.map).Event.Start(currentMap);
                             }
 
@@ -1180,18 +1208,18 @@ namespace Ridingbikesinplaces
 
                             break;
                     }
-
-                    if (player.CheckEntity(currentMap.map) is { Event: Battle } entity)//check if we need to start a battle
+                    if (player.CheckTile(currentMap.map) is {} tile)//checks what tile the player is on if it has an event it tryes loadin it
                     {
-                        if (entity.Event.Start(currentMap) == true)
+                        if (tile.Event is LoadLevel loadLevel)
                         {
-                            Bat1.Letter = " ";
-                            Bat1.Solid = false;
-                            Bat1.Event = null;
+                            player.X = loadLevel.startX;
+                            player.Y = loadLevel.startY;
+                            currentMap = loadLevel.map;
                         }
                     }
-                }
 
+                }
+                terminal.clear(0, currentMap.Y+1);
                 terminal.qWrite(ConsoleColor.Green, "Health = " + player.Health, 0, currentMap.Y+1);
             }
 
